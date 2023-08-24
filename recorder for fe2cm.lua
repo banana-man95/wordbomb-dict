@@ -1406,7 +1406,7 @@ local function SetUpGui()
     RemoveSaveStateInfo.Position = UDim2.new(0, 0, 0.228745103, 0)
     RemoveSaveStateInfo.Size = UDim2.new(1, 0, 0.112999998, 0)
     RemoveSaveStateInfo.Font = Enum.Font.Highway
-    RemoveSaveStateInfo.Text = "Two : Remove a Savestate"
+    RemoveSaveStateInfo.Text = "Period : Remove a Savestate"
     RemoveSaveStateInfo.TextColor3 = Color3.fromRGB(65025, 65025, 65025)
     RemoveSaveStateInfo.TextScaled = true
     RemoveSaveStateInfo.TextSize = 18.000
@@ -1421,7 +1421,7 @@ local function SetUpGui()
     GoBackSavestate.Position = UDim2.new(0, 0, 0.343117774, 0)
     GoBackSavestate.Size = UDim2.new(1, 0, 0.112999998, 0)
     GoBackSavestate.Font = Enum.Font.Highway
-    GoBackSavestate.Text = "Three : Go To Last SaveState"
+    GoBackSavestate.Text = "Comma : Go To Last SaveState"
     GoBackSavestate.TextColor3 = Color3.fromRGB(65025, 65025, 65025)
     GoBackSavestate.TextScaled = true
     GoBackSavestate.TextSize = 18.000
@@ -1436,7 +1436,7 @@ local function SetUpGui()
     GoFrameBack.Position = UDim2.new(0, 0, 0.457489997, 0)
     GoFrameBack.Size = UDim2.new(1, 0, 0.112999998, 0)
     GoFrameBack.Font = Enum.Font.Highway
-    GoFrameBack.Text = "Four : Go Back a Frame"
+    GoFrameBack.Text = "R : Go Back a Frame"
     GoFrameBack.TextColor3 = Color3.fromRGB(65025, 65025, 65025)
     GoFrameBack.TextScaled = true
     GoFrameBack.TextSize = 18.000
@@ -1451,7 +1451,7 @@ local function SetUpGui()
     GoFrameForward.Position = UDim2.new(0, 0, 0.571862638, 0)
     GoFrameForward.Size = UDim2.new(1, 0, 0.112999998, 0)
     GoFrameForward.Font = Enum.Font.Highway
-    GoFrameForward.Text = "Five : Go a Frame Forward"
+    GoFrameForward.Text = "F15 LOLO : Go a Frame Forward"
     GoFrameForward.TextColor3 = Color3.fromRGB(65025, 65025, 65025)
     GoFrameForward.TextScaled = true
     GoFrameForward.TextSize = 18.000
@@ -1466,7 +1466,7 @@ local function SetUpGui()
     SaveRun.Position = UDim2.new(-0.00755972462, 0, 0.767311811, 0)
     SaveRun.Size = UDim2.new(1, 0, 0.112999998, 0)
     SaveRun.Font = Enum.Font.Highway
-    SaveRun.Text = "Six : SaveRun"
+    SaveRun.Text = "KeypadSix : SaveRun"
     SaveRun.TextColor3 = Color3.fromRGB(65025, 65025, 65025)
     SaveRun.TextScaled = true
     SaveRun.TextSize = 18.000
@@ -1825,14 +1825,14 @@ local function UserPause()
         TimeText.TextColor3 = Color3.fromRGB(255, 255, 0)
         TimePauseHolder = tick()
 
-        CapLockPause.Text = "CapsLock : Paused"
+        CapLockPause.Text = "E : Paused"
         CapLockPause.TextColor3 = Color3.fromRGB(255, 255, 0)
     else
         LocalPlayer.Character.HumanoidRootPart.Anchored = false
         TimeText.TextColor3 = Color3.fromRGB(255,255,255)
         TimePaused = TimePaused + tick() - TimePauseHolder
 
-        CapLockPause.Text = "CapsLock : Unpaused"
+        CapLockPause.Text = "E : Unpaused"
         CapLockPause.TextColor3 = Color3.fromRGB(255,255,255)
     end
 end
