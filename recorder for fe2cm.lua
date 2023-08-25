@@ -2172,7 +2172,6 @@ RecordLoop = RunService.Heartbeat:Connect(function(deltaTime)
         SetTimeGui()
         table.insert(PlayerInfo, ReturnPlayerInfo())
         if tick() - timer >= 2 then
-        	AddSavestate()
         	timer = tick()
         end
     else
