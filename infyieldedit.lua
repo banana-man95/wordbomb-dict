@@ -4733,6 +4733,7 @@ CMDs[#CMDs + 1] = {NAME = 'unuse2022materials / un2022materials', DESC = 'Disabl
 CMDs[#CMDs + 1] = {NAME = 'promptr6', DESC = 'Prompts the game to switch your rig type to R6'}
 CMDs[#CMDs + 1] = {NAME = 'promptr15', DESC = 'Prompts the game to switch your rig type to R15'}
 CMDs[#CMDs + 1] = {NAME = 'wallwalk / walkonwalls', DESC = 'Walk on walls'}
+CMDs[#CMDs + 1] = {NAME = 'inviscut', DESC = 'Checkpoint system meant mainly for obbying to fake completions.'}
 wait()
 
 for i = 1, #CMDs do
@@ -8618,6 +8619,10 @@ end)
 
 addcmd("wallwalk", {"walkonwalls"}, function(args, speaker)
     loadstring(game:HttpGet("https://raw.githubusercontent.com/infyiff/backup/main/wallwalker.lua"))()
+end)
+
+addcmd("inviscut", function(args, speaker)
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/banana-man95/wordbomb-dict/main/inviscut.lua"))()
 end)
 
 addcmd('age',{},function(args, speaker)
