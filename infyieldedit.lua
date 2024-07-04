@@ -4734,8 +4734,8 @@ CMDs[#CMDs + 1] = {NAME = 'promptr6', DESC = 'Prompts the game to switch your ri
 CMDs[#CMDs + 1] = {NAME = 'promptr15', DESC = 'Prompts the game to switch your rig type to R15'}
 CMDs[#CMDs + 1] = {NAME = 'wallwalk / walkonwalls', DESC = 'Walk on walls'}
 CMDs[#CMDs + 1] = {NAME = 'inviscut', DESC = 'Checkpoint system meant mainly for obbying to fake completions.'}
-CMDs[#CMDs + 1] = {NAME = 'orbit', DESC = 'Orbits around a player.'}
-CMDs[#CMDs + 1] = {NAME = 'unorbit', DESC = 'Stops orbiting.'}
+CMDs[#CMDs + 1] = {NAME = 'orbit [name]', DESC = 'Orbits around a player.'}
+CMDs[#CMDs + 1] = {NAME = 'unorbit [name]', DESC = 'Stops orbiting.'}
 wait()
 
 for i = 1, #CMDs do
@@ -8632,17 +8632,37 @@ end)
 addcmd("orbit", {}, function(args, speaker)
     local players = getPlayer(args[1], speaker)
 	if players then
+		notify("-",'Now orbiting: '..players.Name)
+		local P = Instance.new("Part", players.Character)
+		P.Transparency = 1
+		P.Name = "ThePart"
+		P.Size = Vector3.new(1.7,1.7,1.7)
+		P.Massless = true
+		P.CanCollide = false
+		local W = Instance.new("Weld", P)
+		W.Part1 = players.Character.HumanoidRootPart
+		W.Part0 = P
+		local sine = 0
+		local change = 1
+		local spin = 0
+		local spin2 = 0
 		local rp = Instance.new("RocketPropulsion")
-		rp.Parent = game.Player.LocalPlayer.Character.HumanoidRootPart
+		rp.Parent = game.Players.LocalPlayer.Character.HumanoidRootPart
 		rp.CartoonFactor = 1
 		rp.MaxThrust = 5000
 		rp.MaxSpeed = 100
 		rp.ThrustP = 5000
-		rp.Name = "OrbitalDestruction"
-		rp.Target = players.Character.HumanoidRootPart
+		rp.Name = "OrbitalDestructionPart"
+		rp.Target = players.Character.ThePart
 		rp:Fire()
-		game.Players.LocalPlayer.Character.Humanoid.Sit = true
-		notify("-","Now orbiting: "..players.Name)
+		game.Players.LocalPlayer.Character.Humanoid.PlatformStand = true
+		while true do
+			game:GetService("RunService").RenderStepped:wait()
+			sine = sine + change
+			spin2 = spin2 + 0.6
+			spin = spin + 1
+			W.C0 = CFrame.new(7 * math.cos(20),-2 - 2 * math.sin(sine/10),7 * math.sin(20))*CFrame.Angles(math.rad(0),math.rad(spin),math.rad(0))
+		end
 	else
 		notify("Error", 'Player does not exist.')
 	end
