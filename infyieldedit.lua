@@ -8621,7 +8621,7 @@ addcmd("wallwalk", {"walkonwalls"}, function(args, speaker)
     loadstring(game:HttpGet("https://raw.githubusercontent.com/infyiff/backup/main/wallwalker.lua"))()
 end)
 
-addcmd("inviscut", function(args, speaker)
+addcmd("inviscut", {}, function(args, speaker)
     loadstring(game:HttpGet("https://raw.githubusercontent.com/banana-man95/wordbomb-dict/main/inviscut.lua"))()
 end)
 
