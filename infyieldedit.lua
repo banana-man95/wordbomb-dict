@@ -8623,6 +8623,8 @@ end)
 
 addcmd("inviscut", {}, function(args, speaker)
     loadstring(game:HttpGet("https://raw.githubusercontent.com/banana-man95/wordbomb-dict/main/inviscut.lua"))()
+    task.wait(0.5)
+    notify("Inviscut", "Inviscut (hopefully) loaded.")
 end)
 
 addcmd('age',{},function(args, speaker)
