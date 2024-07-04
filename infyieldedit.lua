@@ -4734,6 +4734,8 @@ CMDs[#CMDs + 1] = {NAME = 'promptr6', DESC = 'Prompts the game to switch your ri
 CMDs[#CMDs + 1] = {NAME = 'promptr15', DESC = 'Prompts the game to switch your rig type to R15'}
 CMDs[#CMDs + 1] = {NAME = 'wallwalk / walkonwalls', DESC = 'Walk on walls'}
 CMDs[#CMDs + 1] = {NAME = 'inviscut', DESC = 'Checkpoint system meant mainly for obbying to fake completions.'}
+CMDs[#CMDs + 1] = {NAME = 'orbit', DESC = 'Orbits around a player.'}
+CMDs[#CMDs + 1] = {NAME = 'unorbit', DESC = 'Stops orbiting.'}
 wait()
 
 for i = 1, #CMDs do
@@ -8625,6 +8627,36 @@ addcmd("inviscut", {}, function(args, speaker)
     loadstring(game:HttpGet("https://raw.githubusercontent.com/banana-man95/wordbomb-dict/main/inviscut.lua"))()
     task.wait(0.5)
     notify("Inviscut", 'Inviscut (hopefully) loaded.')
+end)
+
+addcmd("orbit", {}, function(args, speaker)
+    local players = getPlayer(args[1], speaker)
+	if players then
+		local rp = Instance.new("RocketPropulsion")
+		rp.Parent = game.Player.LocalPlayer.Character.HumanoidRootPart
+		rp.CartoonFactor = 1
+		rp.MaxThrust = 5000
+		rp.MaxSpeed = 100
+		rp.ThrustP = 5000
+		rp.Name = "OrbitalDestruction"
+		rp.Target = players.Character.HumanoidRootPart
+		rp:Fire()
+		game.Players.LocalPlayer.Character.Humanoid.Sit = true
+		notify("-","Now orbiting: "..players.Name)
+	else
+		notify("Error", 'Player does not exist.')
+	end
+end)
+
+addcmd("unorbit", {}, function(args, speaker)
+    for i,v in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
+		if v.Name == "OrbitalDestructionPart" or v.Name == "OrbitalDestruction" then
+			v:Destroy()
+		end
+	end
+	game.Players.LocalPlayer.Character.Humanoid.PlatformStand = false
+	game.Players.LocalPlayer.Character.Humanoid.Sit = false
+	notify("-",'Stopped orbiting')
 end)
 
 addcmd('age',{},function(args, speaker)
