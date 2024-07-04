@@ -4736,6 +4736,7 @@ CMDs[#CMDs + 1] = {NAME = 'wallwalk / walkonwalls', DESC = 'Walk on walls'}
 CMDs[#CMDs + 1] = {NAME = 'inviscut', DESC = 'Checkpoint system meant mainly for obbying to fake completions.'}
 CMDs[#CMDs + 1] = {NAME = 'orbit [name]', DESC = 'Orbits around a player.'}
 CMDs[#CMDs + 1] = {NAME = 'unorbit [name]', DESC = 'Stops orbiting.'}
+CMDs[#CMDs + 1] = {NAME = 'nugget', DESC = 'Makes your character look like a nugget.'}
 wait()
 
 for i = 1, #CMDs do
@@ -8695,6 +8696,32 @@ addcmd("unorbit", {}, function(args, speaker)
 	game.Players.LocalPlayer.Character.Humanoid.PlatformStand = false
 	game.Players.LocalPlayer.Character.Humanoid.Sit = false
 	notify("-",'Stopped orbiting')
+end)
+
+addcmd("nugget", {}, function(args, speaker)
+    local function cmd15(player)
+        return player.Character and player.Character:FindFirstChildOfClass("Humanoid") and player.Character:FindFirstChildOfClass("Humanoid").RigType == Enum.HumanoidRigType.R15
+    end
+
+    notify("-", "Changed character into a nugget")
+    
+    if cmd15(speaker) then
+        for _, v in pairs(speaker.Character:GetChildren()) do
+            if v.Name == "RightUpperArm" or v.Name == "LeftUpperArm" or v.Name == "RightUpperLeg" or v.Name == "LeftUpperLeg" then
+                v:Destroy()
+            end
+        end
+    else
+        for _, v in pairs(speaker.Character:GetChildren()) do
+            if v.Name == "Right Arm" or v.Name == "Left Arm" or v.Name == "Right Leg" or v.Name == "Left Leg" then
+                v:Destroy()
+            end
+        end
+    end
+    
+    if speaker.Character and speaker.Character:FindFirstChild("Head") and speaker.Character.Head:FindFirstChild("Mesh") then
+        speaker.Character.Head.Mesh:Destroy()
+    end
 end)
 
 addcmd('age',{},function(args, speaker)
