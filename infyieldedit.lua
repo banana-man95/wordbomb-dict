@@ -4737,6 +4737,7 @@ CMDs[#CMDs + 1] = {NAME = 'inviscut', DESC = 'Checkpoint system meant mainly for
 CMDs[#CMDs + 1] = {NAME = 'orbit [name]', DESC = 'Orbits around a player.'}
 CMDs[#CMDs + 1] = {NAME = 'unorbit [name]', DESC = 'Stops orbiting.'}
 CMDs[#CMDs + 1] = {NAME = 'nugget', DESC = 'Makes your character look like a nugget.'}
+CMDs[#CMDs + 1] = {NAME = 'partcount / countparts', DESC = 'Counts the part amount in workspace.'}
 wait()
 
 for i = 1, #CMDs do
@@ -8722,6 +8723,23 @@ addcmd("nugget", {}, function(args, speaker)
     if speaker.Character and speaker.Character:FindFirstChild("Head") and speaker.Character.Head:FindFirstChild("Mesh") then
         speaker.Character.Head.Mesh:Destroy()
     end
+end)
+
+addcmd("partcount", {"countparts"}, function(args, speaker)
+    local count = 0
+    
+    local function countParts(parent)
+        for _, child in ipairs(parent:GetChildren()) do
+            if child:IsA("BasePart") then
+                count = count + 1
+            end
+            countParts(child)
+        end
+    end
+    
+    countParts(game.Workspace)
+    
+    notify("Part Count", "There are " .. tostring(count) .. " parts loaded in the workspace.")
 end)
 
 addcmd('age',{},function(args, speaker)
