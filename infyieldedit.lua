@@ -12419,7 +12419,6 @@ addcmd('thawunanchored',{'thawua','unfreezeunanchored','unfreezeua'},function(ar
     end
     frozenParts = {}
 end)
-)
 
 addcmd('tpunanchored',{'tpua'},function(args, speaker)
     local players = getPlayer(args[1], speaker)
