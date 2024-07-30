@@ -4527,6 +4527,8 @@ CMDs[#CMDs + 1] = {NAME = 'fireproximityprompts / firepp [name]', DESC = 'Uses a
 CMDs[#CMDs + 1] = {NAME = 'instantproximityprompts / instantpp', DESC = 'Disable the cooldown for proximity prompts'}
 CMDs[#CMDs + 1] = {NAME = 'uninstantproximityprompts / uninstantpp', DESC = 'Undo the cooldown removal'}
 CMDs[#CMDs + 1] = {NAME = 'tpunanchored / tpua [player]', DESC = 'Teleports unanchored parts to a player'}
+CMDs[#CMDs + 1] = {NAME = 'orbitunanchored / orbitua [player]', DESC = 'Orbits unanchored parts hopefully'}
+CMDs[#CMDs + 1] = {NAME = 'unorbitunanchored / unorbitua [player]', DESC = 'Unorbits unanchored parts hopefully'}
 CMDs[#CMDs + 1] = {NAME = 'animsunanchored / freezeua', DESC = 'Freezes unanchored parts'}
 CMDs[#CMDs + 1] = {NAME = 'thawunanchored / thawua / unfreezeua', DESC = 'Thaws unanchored parts'}
 CMDs[#CMDs + 1] = {NAME = 'removeterrain / rterrain / noterrain', DESC = 'Removes all terrain'}
@@ -12444,6 +12446,62 @@ addcmd('tpunanchored',{'tpua'},function(args, speaker)
             c.Position = Players[v].Character.Head.Position
         end
     end
+end)
+
+addcmd('orbitunanchored', {'orbitua'}, function(args, speaker)
+    local player = getPlayer(args[1], speaker)[1]
+    local targetPlayer = Players[player]
+    local radius = tonumber(args[2]) or 10
+    local height = tonumber(args[3]) or 0
+
+    local center = targetPlayer.Character.HumanoidRootPart
+    local angle = 0
+    local orbitParts = {}
+
+    for _, part in pairs(workspace:GetDescendants()) do
+        if part:IsA("BasePart") and not part.Anchored and not part:IsDescendantOf(targetPlayer.Character) and
+           part.Name ~= "Torso" and part.Name ~= "Head" and 
+           part.Name ~= "Right Arm" and part.Name ~= "Left Arm" and 
+           part.Name ~= "Right Leg" and part.Name ~= "Left Leg" and 
+           part.Name ~= "HumanoidRootPart" then
+            
+            for _, c in pairs(part:GetChildren()) do
+                if c:IsA("BodyPosition") or c:IsA("BodyGyro") then
+                    c:Destroy()
+                end
+            end
+
+            local bp = Instance.new("BodyPosition")
+            bp.Parent = part
+            bp.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+            bp.P = 1000000
+            bp.D = 100
+
+            table.insert(orbitParts, {part = part, bp = bp})
+        end
+    end
+
+    local function orbit()
+        angle = angle + math.pi * 2 / (3 * 60)
+        for i, v in ipairs(orbitParts) do
+            local offset = 2 * math.pi * i / #orbitParts
+            local x = math.cos(angle + offset) * radius
+            local z = math.sin(angle + offset) * radius
+            v.bp.Position = center.Position + Vector3.new(x, height, z)
+        end
+    end
+
+    local orbitConnection = game:GetService("RunService").Heartbeat:Connect(orbit)
+end)
+
+addcmd('unorbitunanchored', {'unorbitua'}, function(args, speaker)
+	if orbitConnection then
+        	orbitConnection:Disconnect()
+        	for _, v in ipairs(orbitParts) do
+        		if v.bp then v.bp:Destroy() end
+        	end
+        	orbitParts = {}
+	end
 end)
 
 keycodeMap = {
