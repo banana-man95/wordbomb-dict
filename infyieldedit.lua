@@ -12453,6 +12453,13 @@ local orbitingParts = {}
 
 addcmd('orbitunanchored', {'orbitua'}, function(args, speaker)
     if orbitConnection then orbitConnection:Disconnect() end
+    for _, v in ipairs(orbitingParts) do
+        if v.part and v.part.Parent then
+            v.part.CanCollide = v.originalCanCollide
+            if v.bp then v.bp:Destroy() end
+            if v.vf then v.vf:Destroy() end
+        end
+    end
     orbitingParts = {}
 
     local player = getPlayer(args[1], speaker)[1]
@@ -12470,7 +12477,6 @@ addcmd('orbitunanchored', {'orbitua'}, function(args, speaker)
            part.Name ~= "Right Leg" and part.Name ~= "Left Leg" and 
            part.Name ~= "HumanoidRootPart" then
             
-
             for _, c in pairs(part:GetChildren()) do
                 if c:IsA("BodyPosition") or c:IsA("BodyGyro") then
                     c:Destroy()
@@ -12499,12 +12505,14 @@ addcmd('orbitunanchored', {'orbitua'}, function(args, speaker)
     local function orbit()
         angle = angle + math.pi * 2 / (3 * 60)
         for i, v in ipairs(orbitingParts) do
-            local offset = 2 * math.pi * i / #orbitingParts
-            local x = math.cos(angle + offset) * radius
-            local z = math.sin(angle + offset) * radius
-            v.bp.Position = center.Position + Vector3.new(x, height, z)
-            
-            v.vf.Force = -v.part.Velocity * v.part.AssemblyMass
+            if v.part and v.part.Parent then
+                local offset = 2 * math.pi * i / #orbitingParts
+                local x = math.cos(angle + offset) * radius
+                local z = math.sin(angle + offset) * radius
+                v.bp.Position = center.Position + Vector3.new(x, height, z)
+                
+                v.vf.Force = -v.part.Velocity * v.part.AssemblyMass
+            end
         end
     end
 
@@ -12515,9 +12523,11 @@ addcmd('unorbitunanchored', {'unorbitua'}, function(args, speaker)
     if orbitConnection then
         orbitConnection:Disconnect()
         for _, v in ipairs(orbitingParts) do
-            if v.bp then v.bp:Destroy() end
-            if v.vf then v.vf:Destroy() end
-            v.part.CanCollide = v.originalCanCollide
+            if v.part and v.part.Parent then
+                if v.bp then v.bp:Destroy() end
+                if v.vf then v.vf:Destroy() end
+                v.part.CanCollide = v.originalCanCollide
+            end
         end
         orbitingParts = {}
     end
