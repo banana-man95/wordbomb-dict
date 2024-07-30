@@ -12448,7 +12448,13 @@ addcmd('tpunanchored',{'tpua'},function(args, speaker)
     end
 end)
 
+local orbitConnection
+local orbitingParts = {}
+
 addcmd('orbitunanchored', {'orbitua'}, function(args, speaker)
+    if orbitConnection then orbitConnection:Disconnect() end
+    orbitingParts = {}
+
     local player = getPlayer(args[1], speaker)[1]
     local targetPlayer = Players[player]
     local radius = tonumber(args[2]) or 10
@@ -12456,7 +12462,6 @@ addcmd('orbitunanchored', {'orbitua'}, function(args, speaker)
 
     local center = targetPlayer.Character.HumanoidRootPart
     local angle = 0
-    local orbitParts = {}
 
     for _, part in pairs(workspace:GetDescendants()) do
         if part:IsA("BasePart") and not part.Anchored and not part:IsDescendantOf(targetPlayer.Character) and
@@ -12465,6 +12470,7 @@ addcmd('orbitunanchored', {'orbitua'}, function(args, speaker)
            part.Name ~= "Right Leg" and part.Name ~= "Left Leg" and 
            part.Name ~= "HumanoidRootPart" then
             
+
             for _, c in pairs(part:GetChildren()) do
                 if c:IsA("BodyPosition") or c:IsA("BodyGyro") then
                     c:Destroy()
@@ -12477,31 +12483,44 @@ addcmd('orbitunanchored', {'orbitua'}, function(args, speaker)
             bp.P = 1000000
             bp.D = 100
 
-            table.insert(orbitParts, {part = part, bp = bp})
+            local originalCanCollide = part.CanCollide
+            part.CanCollide = false
+
+            local vf = Instance.new("VectorForce")
+            vf.Force = Vector3.new(0, 0, 0)
+            vf.RelativeTo = Enum.ActuatorRelativeTo.World
+            vf.Attachment0 = Instance.new("Attachment", part)
+            vf.Parent = part
+
+            table.insert(orbitingParts, {part = part, bp = bp, vf = vf, originalCanCollide = originalCanCollide})
         end
     end
 
     local function orbit()
         angle = angle + math.pi * 2 / (3 * 60)
-        for i, v in ipairs(orbitParts) do
-            local offset = 2 * math.pi * i / #orbitParts
+        for i, v in ipairs(orbitingParts) do
+            local offset = 2 * math.pi * i / #orbitingParts
             local x = math.cos(angle + offset) * radius
             local z = math.sin(angle + offset) * radius
             v.bp.Position = center.Position + Vector3.new(x, height, z)
+            
+            v.vf.Force = -v.part.Velocity * v.part.AssemblyMass
         end
     end
 
-    local orbitConnection = game:GetService("RunService").Heartbeat:Connect(orbit)
+    orbitConnection = game:GetService("RunService").Heartbeat:Connect(orbit)
 end)
 
 addcmd('unorbitunanchored', {'unorbitua'}, function(args, speaker)
-	if orbitConnection then
-        	orbitConnection:Disconnect()
-        	for _, v in ipairs(orbitParts) do
-        		if v.bp then v.bp:Destroy() end
-        	end
-        	orbitParts = {}
-	end
+    if orbitConnection then
+        orbitConnection:Disconnect()
+        for _, v in ipairs(orbitingParts) do
+            if v.bp then v.bp:Destroy() end
+            if v.vf then v.vf:Destroy() end
+            v.part.CanCollide = v.originalCanCollide
+        end
+        orbitingParts = {}
+    end
 end)
 
 keycodeMap = {
