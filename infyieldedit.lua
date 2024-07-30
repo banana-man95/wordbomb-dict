@@ -4527,8 +4527,8 @@ CMDs[#CMDs + 1] = {NAME = 'fireproximityprompts / firepp [name]', DESC = 'Uses a
 CMDs[#CMDs + 1] = {NAME = 'instantproximityprompts / instantpp', DESC = 'Disable the cooldown for proximity prompts'}
 CMDs[#CMDs + 1] = {NAME = 'uninstantproximityprompts / uninstantpp', DESC = 'Undo the cooldown removal'}
 CMDs[#CMDs + 1] = {NAME = 'tpunanchored / tpua [player]', DESC = 'Teleports unanchored parts to a player'}
-CMDs[#CMDs + 1] = {NAME = 'orbitunanchored / orbitua [player]', DESC = 'Orbits unanchored parts hopefully'}
-CMDs[#CMDs + 1] = {NAME = 'unorbitunanchored / unorbitua [player]', DESC = 'Unorbits unanchored parts hopefully'}
+CMDs[#CMDs + 1] = {NAME = 'orbitunanchored / orbitua [player] [radius] [height]', DESC = 'Orbits unanchored parts hopefully'}
+CMDs[#CMDs + 1] = {NAME = 'unorbitunanchored / unorbitua', DESC = 'Unorbits unanchored parts hopefully'}
 CMDs[#CMDs + 1] = {NAME = 'animsunanchored / freezeua', DESC = 'Freezes unanchored parts'}
 CMDs[#CMDs + 1] = {NAME = 'thawunanchored / thawua / unfreezeua', DESC = 'Thaws unanchored parts'}
 CMDs[#CMDs + 1] = {NAME = 'removeterrain / rterrain / noterrain', DESC = 'Removes all terrain'}
