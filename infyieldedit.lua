@@ -12451,6 +12451,16 @@ end)
 local orbitConnection
 local orbitingParts = {}
 
+local function disableSeat(seat)
+    seat.Disabled = true
+    -- Store the original Disabled state
+    return seat.Disabled
+end
+
+local function restoreSeat(seat, originalState)
+    seat.Disabled = originalState
+end
+
 addcmd('orbitunanchored', {'orbitua'}, function(args, speaker)
     if orbitConnection then orbitConnection:Disconnect() end
     for _, v in ipairs(orbitingParts) do
@@ -12458,6 +12468,9 @@ addcmd('orbitunanchored', {'orbitua'}, function(args, speaker)
             v.part.CanCollide = v.originalCanCollide
             if v.bp then v.bp:Destroy() end
             if v.vf then v.vf:Destroy() end
+            if v.seat then
+                restoreSeat(v.seat, v.originalSeatState)
+            end
         end
     end
     orbitingParts = {}
@@ -12498,7 +12511,21 @@ addcmd('orbitunanchored', {'orbitua'}, function(args, speaker)
             vf.Attachment0 = Instance.new("Attachment", part)
             vf.Parent = part
 
-            table.insert(orbitingParts, {part = part, bp = bp, vf = vf, originalCanCollide = originalCanCollide})
+            local seat = nil
+            local originalSeatState = nil
+            if part:IsA("VehicleSeat") or part:IsA("Seat") then
+                seat = part
+                originalSeatState = disableSeat(seat)
+            end
+
+            table.insert(orbitingParts, {
+                part = part,
+                bp = bp,
+                vf = vf,
+                originalCanCollide = originalCanCollide,
+                seat = seat,
+                originalSeatState = originalSeatState
+            })
         end
     end
 
@@ -12527,6 +12554,9 @@ addcmd('unorbitunanchored', {'unorbitua'}, function(args, speaker)
                 if v.bp then v.bp:Destroy() end
                 if v.vf then v.vf:Destroy() end
                 v.part.CanCollide = v.originalCanCollide
+                if v.seat then
+                    restoreSeat(v.seat, v.originalSeatState)
+                end
             end
         end
         orbitingParts = {}
