@@ -12453,12 +12453,23 @@ local orbitingParts = {}
 
 local function disableSeat(seat)
     seat.Disabled = true
-    -- Store the original Disabled state
     return seat.Disabled
 end
 
 local function restoreSeat(seat, originalState)
     seat.Disabled = originalState
+end
+
+local function isPartHeld(part, speaker)
+    local character = speaker.Character
+    if character then
+        for _, child in pairs(character:GetChildren()) do
+            if child:IsA("Tool") and child:FindFirstChild("Handle") == part then
+                return true
+            end
+        end
+    end
+    return false
 end
 
 addcmd('orbitunanchored', {'orbitua'}, function(args, speaker)
@@ -12484,7 +12495,9 @@ addcmd('orbitunanchored', {'orbitua'}, function(args, speaker)
     local angle = 0
 
     for _, part in pairs(workspace:GetDescendants()) do
-        if part:IsA("BasePart") and not part.Anchored and not part:IsDescendantOf(targetPlayer.Character) and
+        if part:IsA("BasePart") and not part.Anchored and 
+           not part:IsDescendantOf(targetPlayer.Character) and
+           not isPartHeld(part, speaker) and
            part.Name ~= "Torso" and part.Name ~= "Head" and 
            part.Name ~= "Right Arm" and part.Name ~= "Left Arm" and 
            part.Name ~= "Right Leg" and part.Name ~= "Left Leg" and 
@@ -12532,13 +12545,20 @@ addcmd('orbitunanchored', {'orbitua'}, function(args, speaker)
     local function orbit()
         angle = angle + math.pi * 2 / (3 * 60)
         for i, v in ipairs(orbitingParts) do
-            if v.part and v.part.Parent then
+            if v.part and v.part.Parent and not isPartHeld(v.part, speaker) then
                 local offset = 2 * math.pi * i / #orbitingParts
                 local x = math.cos(angle + offset) * radius
                 local z = math.sin(angle + offset) * radius
                 v.bp.Position = center.Position + Vector3.new(x, height, z)
-                
                 v.vf.Force = -v.part.Velocity * v.part.AssemblyMass
+            elseif isPartHeld(v.part, speaker) then
+                if v.bp then v.bp:Destroy() end
+                if v.vf then v.vf:Destroy() end
+                v.part.CanCollide = v.originalCanCollide
+                if v.seat then
+                    restoreSeat(v.seat, v.originalSeatState)
+                end
+                table.remove(orbitingParts, i)
             end
         end
     end
